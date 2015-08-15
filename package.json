@@ -1,0 +1,64 @@
+{
+  "name": "fortune-json-api",
+  "description": "JSON API serializer for Fortune.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "email": "0x8890@airmail.cc",
+    "url": "http://0x8890.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fortunejs/fortune-json-api.git"
+  },
+  "bugs": "https://github.com/fortunejs/fortune-json-api/issues",
+  "scripts": {
+    "clean": "rimraf dist/lib dist/test",
+    "build": "npm run build:lib && npm run build:test",
+    "build:lib": "mkdirp dist/lib && babel lib --out-dir dist/lib",
+    "build:test": "mkdirp dist/test && babel test --out-dir dist/test",
+    "prepublish": "npm run clean && npm run build",
+    "test": "npm run test:lint && npm run build && node dist/test",
+    "test:lint": "eslint lib test"
+  },
+  "dependencies": {
+    "babel-runtime": "^5.8.20",
+    "deep-equal": "^1.0.0",
+    "inflection": "^1.7.1",
+    "uri-templates": "^0.1.7"
+  },
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "babel-eslint": "^4.0.5",
+    "eslint": "^1.1.0",
+    "fortune": "^1.0.0-rc.12",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.4.2"
+  },
+  "files": [
+    "dist/lib",
+    "dist/test",
+    "lib/",
+    "test/",
+    "LICENSE"
+  ],
+  "main": "dist/lib/index.js",
+  "babel": {
+    "nonStandard": false,
+    "optional": [
+      "runtime"
+    ]
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "keywords": [
+    "json",
+    "api",
+    "fortune",
+    "http",
+    "hypermedia",
+    "rest",
+    "serializer"
+  ]
+}
