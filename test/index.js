@@ -169,7 +169,7 @@ run(() => {
 run(() => {
   comment('filter a collection')
   return test(`/users?${qs.stringify({
-    'filter[name]': 'John Doe',
+    'filter[name]': 'John Doe,Jane Doe',
     'filter[birthday]': '1992-12-07'
   })}`, null, response => {
     equal(response.status, 200, 'status is correct')
