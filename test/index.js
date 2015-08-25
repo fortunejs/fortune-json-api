@@ -34,7 +34,8 @@ run(() => {
           type: 'Chihuahua',
           birthday: new Date().toJSON(),
           picture: new Buffer('This is a string.').toString('base64'),
-          'favorite-food': 'Bacon'
+          'favorite-food': 'Bacon',
+          nicknames: [ 'Doge', 'The Dog' ]
         },
         relationships: {
           owner: {
@@ -106,7 +107,7 @@ run(() => {
 
 
 run(() => {
-  comment('update record')
+  comment('update record #1')
   return test('/users/2', {
     method: 'patch',
     headers: { 'Content-Type': mediaType },
@@ -138,6 +139,28 @@ run(() => {
               { type: 'users', id: 3 }
             ]
           }
+        }
+      }
+    }
+  }, response => {
+    equal(response.status, 200, 'status is correct')
+    ok(Math.abs(new Date(response.body.data.attributes['last-modified'])
+      .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
+  })
+})
+
+
+run(() => {
+  comment('update record #2')
+  return test('/animals/1', {
+    method: 'patch',
+    headers: { 'Content-Type': mediaType },
+    body: {
+      data: {
+        id: 1,
+        type: 'animals',
+        attributes: {
+          nicknames: [ 'Foo', 'Bar' ]
         }
       }
     }
