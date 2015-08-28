@@ -14,7 +14,7 @@ run(() => {
   comment('get ad-hoc index')
   return test('/', null, response => {
     equal(response.status, 200, 'status is correct')
-    equal(response.headers.get('content-type'), mediaType,
+    equal(response.headers['content-type'], mediaType,
       'content type is correct')
   })
 })
@@ -46,9 +46,9 @@ run(() => {
     }
   }, response => {
     equal(response.status, 201, 'status is correct')
-    equal(response.headers.get('content-type'), mediaType,
+    equal(response.headers['content-type'], mediaType,
       'content type is correct')
-    equal(response.headers.get('location'), '/animals/4',
+    equal(response.headers['location'], '/animals/4',
       'location header looks right')
     equal(response.body.data.type, 'animals', 'type is correct')
     equal(response.body.data.attributes['favorite-food'], 'Bacon',
@@ -74,7 +74,7 @@ run(() => {
     }
   }, response => {
     equal(response.status, 409, 'status is correct')
-    equal(response.headers.get('content-type'), mediaType,
+    equal(response.headers['content-type'], mediaType,
       'content type is correct')
     equal(response.body.errors.length, 1, 'error is correct')
   })
@@ -88,7 +88,7 @@ run(() => {
     headers: { 'Content-Type': mediaType }
   }, response => {
     equal(response.status, 405, 'status is correct')
-    equal(response.headers.get('allow'), 'GET, PATCH, DELETE',
+    equal(response.headers['allow'], 'GET, PATCH, DELETE',
       'allow header is correct')
     equal(response.body.errors.length, 1, 'error exists')
   })
@@ -99,7 +99,7 @@ run(() => {
   comment('create record with wrong type should fail')
   return test('/users', { method: 'post' }, response => {
     equal(response.status, 415, 'status is correct')
-    equal(response.headers.get('content-type'), mediaType,
+    equal(response.headers['content-type'], mediaType,
       'content type is correct')
     equal(response.body.errors.length, 1, 'error exists')
   })
@@ -407,7 +407,7 @@ run(() => {
   comment('respond to options: index')
   return test('/', { method: 'options' }, response => {
     equal(response.status, 204, 'status is correct')
-    equal(response.headers.get('allow'),
+    equal(response.headers['allow'],
       'GET', 'allow header is correct')
   })
 })
@@ -417,7 +417,7 @@ run(() => {
   comment('respond to options: collection')
   return test('/animals', { method: 'options' }, response => {
     equal(response.status, 204, 'status is correct')
-    equal(response.headers.get('allow'),
+    equal(response.headers['allow'],
       'GET, POST', 'allow header is correct')
   })
 })
@@ -427,7 +427,7 @@ run(() => {
   comment('respond to options: individual')
   return test('/animals/1', { method: 'options' }, response => {
     equal(response.status, 204, 'status is correct')
-    equal(response.headers.get('allow'),
+    equal(response.headers['allow'],
       'GET, PATCH, DELETE', 'allow header is correct')
   })
 })
@@ -437,7 +437,7 @@ run(() => {
   comment('respond to options: link')
   return test('/animals/1/owner', { method: 'options' }, response => {
     equal(response.status, 204, 'status is correct')
-    equal(response.headers.get('allow'),
+    equal(response.headers['allow'],
       'GET', 'allow header is correct')
   })
 })
@@ -448,7 +448,7 @@ run(() => {
   return test('/animals/1/relationships/owner', { method: 'options' },
   response => {
     equal(response.status, 204, 'status is correct')
-    equal(response.headers.get('allow'),
+    equal(response.headers['allow'],
       'GET, POST, PATCH, DELETE', 'allow header is correct')
   })
 })
