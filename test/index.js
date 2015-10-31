@@ -464,3 +464,59 @@ run(() => {
     equal(response.status, 404, 'status is correct')
   })
 })
+
+run(() => {
+  comment('get a collection with limit')
+  return test(`/animals?${qs.stringify({
+    'page[limit]': 1
+  })}`, null, response => {
+    equal(response.status, 200, 'status is correct')
+    ok(~response.body.links.self.indexOf('/animals'), 'self link is correct')
+    ok(~response.body.links.first.indexOf('page[offset]=0'),
+      'first link is correct')
+    ok(~response.body.links.last.indexOf('page[offset]=4'),
+      'last link is correct')
+    ok(~response.body.links.next.indexOf('page[offset]=1'),
+      'next link is correct')
+    ok(!response.body.links.prev, 'prev link is undefined')
+  })
+})
+
+
+run(() => {
+  comment('get a collection\'s second pade')
+  return test(`/animals?${qs.stringify({
+    'page[limit]': 1,
+    'page[offset]': 1
+  })}`, null, response => {
+    equal(response.status, 200, 'status is correct')
+    ok(~response.body.links.self.indexOf('/animals'), 'self link is correct')
+    ok(~response.body.links.first.indexOf('page[offset]=0'),
+      'first link is correct')
+    ok(~response.body.links.last.indexOf('page[offset]=4'),
+      'last link is correct')
+    ok(~response.body.links.next.indexOf('page[offset]=2'),
+      'next link is correct')
+    ok(~response.body.links.prev.indexOf('page[offset]=0'),
+      'prev link is correct')
+  })
+})
+
+
+run(() => {
+  comment('get a collection\'s last pade')
+  return test(`/animals?${qs.stringify({
+    'page[limit]': 1,
+    'page[offset]': 4
+  })}`, null, response => {
+    equal(response.status, 200, 'status is correct')
+    ok(~response.body.links.self.indexOf('/animals'), 'self link is correct')
+    ok(~response.body.links.first.indexOf('page[offset]=0'),
+      'first link is correct')
+    ok(~response.body.links.last.indexOf('page[offset]=4'),
+      'last link is correct')
+    ok(!response.body.links.next, 'next link is undefined')
+    ok(~response.body.links.prev.indexOf('page[offset]=3'),
+      'prev link is correct')
+  })
+})
