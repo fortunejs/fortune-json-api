@@ -1,7 +1,7 @@
 {
   "name": "fortune-json-api",
   "description": "JSON API serializer for Fortune.",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "license": "MIT",
   "author": {
     "email": "0x8890@airmail.cc",
@@ -22,15 +22,17 @@
     "test:lint": "eslint lib test"
   },
   "dependencies": {
-    "babel-runtime": "^5.8.24",
+    "babel-runtime": "^6.0.14",
     "deep-equal": "^1.0.1",
-    "inflection": "^1.7.1",
-    "uri-templates": "^0.1.7"
+    "inflection": "^1.7.2",
+    "uri-templates": "^0.1.9"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
-    "eslint": "^1.5.0",
-    "fortune": "^1.3.11",
+    "babel-cli": "^6.0.14",
+    "babel-plugin-transform-runtime": "^6.0.14",
+    "babel-preset-es2015": "^6.0.14",
+    "eslint": "^1.8.0",
+    "fortune": "^1.4.4",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.4.3"
   },
@@ -43,13 +45,15 @@
   ],
   "main": "dist/lib/index.js",
   "babel": {
-    "nonStandard": false,
-    "optional": [
-      "runtime"
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-runtime"
     ]
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4.2.0"
   },
   "keywords": [
     "json",

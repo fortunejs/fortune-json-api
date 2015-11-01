@@ -27,7 +27,7 @@ const store = fortune.create({
 
 The `options` object is as follows:
 
-- `prefix`: hyperlink prefix, without trailing slash. Required.
+- `prefix`: hyperlink prefix, without trailing slash. Default: `""` (empty string).
 - `inflectType`: pluralize the record type name in the URI. Default: `true`.
 - `inflectKeys`: camelize the field names per record. Default: `true`.
 - `maxLimit`: maximum number of records to show per page. Default: `1000`.

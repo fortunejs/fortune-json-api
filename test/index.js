@@ -6,9 +6,7 @@ import jsonApi from '../lib'
 
 const mediaType = 'application/vnd.api+json'
 const test = httpTest.bind(null, {
-  serializers: [ {
-    type: jsonApi, options: { prefix: 'http://localhost:1337' }
-  } ]
+  serializers: [ { type: jsonApi } ]
 })
 
 
