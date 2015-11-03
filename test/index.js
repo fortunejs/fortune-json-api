@@ -1,5 +1,6 @@
+import deepEqual from 'deep-equal'
 import qs from 'querystring'
-import { run, comment, ok, deepEqual, equal } from 'fortune/test/harness'
+import { run, comment, ok } from 'fortune/test/harness'
 import httpTest from 'fortune/test/http'
 import jsonApi from '../lib'
 
@@ -13,8 +14,8 @@ const test = httpTest.bind(null, {
 run(() => {
   comment('get ad-hoc index')
   return test('/', null, response => {
-    equal(response.status, 200, 'status is correct')
-    equal(response.headers['content-type'], mediaType,
+    ok(response.status === 200, 'status is correct')
+    ok(response.headers['content-type'] === mediaType,
       'content type is correct')
   })
 })
@@ -45,16 +46,16 @@ run(() => {
       }
     }
   }, response => {
-    equal(response.status, 201, 'status is correct')
-    equal(response.headers['content-type'], mediaType,
+    ok(response.status === 201, 'status is correct')
+    ok(response.headers['content-type'] === mediaType,
       'content type is correct')
     ok(~response.headers['location'].indexOf('/animals/4'),
       'location header looks right')
-    equal(response.body.data.type, 'animals', 'type is correct')
-    equal(response.body.data.attributes['favorite-food'], 'Bacon',
+    ok(response.body.data.type === 'animals', 'type is correct')
+    ok(response.body.data.attributes['favorite-food'] === 'Bacon',
       'inflected key value is correct')
-    equal(new Buffer(response.body.data.attributes.picture, 'base64')
-      .toString(), 'This is a string.', 'buffer is correct')
+    ok(new Buffer(response.body.data.attributes.picture, 'base64')
+      .toString() === 'This is a string.', 'buffer is correct')
     ok(Date.now() - new Date(response.body.data.attributes.birthday)
       .getTime() < 60 * 1000, 'date is close enough')
   })
@@ -73,10 +74,10 @@ run(() => {
       }
     }
   }, response => {
-    equal(response.status, 409, 'status is correct')
-    equal(response.headers['content-type'], mediaType,
+    ok(response.status === 409, 'status is correct')
+    ok(response.headers['content-type'] === mediaType,
       'content type is correct')
-    equal(response.body.errors.length, 1, 'error is correct')
+    ok(response.body.errors.length === 1, 'error is correct')
   })
 })
 
@@ -87,10 +88,10 @@ run(() => {
     method: 'post',
     headers: { 'Content-Type': mediaType }
   }, response => {
-    equal(response.status, 405, 'status is correct')
-    equal(response.headers['allow'], 'GET, PATCH, DELETE',
+    ok(response.status === 405, 'status is correct')
+    ok(response.headers['allow'] === 'GET, PATCH, DELETE',
       'allow header is correct')
-    equal(response.body.errors.length, 1, 'error exists')
+    ok(response.body.errors.length === 1, 'error exists')
   })
 })
 
@@ -98,10 +99,10 @@ run(() => {
 run(() => {
   comment('create record with wrong type should fail')
   return test('/users', { method: 'post' }, response => {
-    equal(response.status, 415, 'status is correct')
-    equal(response.headers['content-type'], mediaType,
+    ok(response.status === 415, 'status is correct')
+    ok(response.headers['content-type'] === mediaType,
       'content type is correct')
-    equal(response.body.errors.length, 1, 'error exists')
+    ok(response.body.errors.length === 1, 'error exists')
   })
 })
 
@@ -143,7 +144,7 @@ run(() => {
       }
     }
   }, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(Math.abs(new Date(response.body.data.attributes['last-modified'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
   })
@@ -165,7 +166,7 @@ run(() => {
       }
     }
   }, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(Math.abs(new Date(response.body.data.attributes['last-modified'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
   })
@@ -179,11 +180,11 @@ run(() => {
     'sort': 'birthday,-name',
     'fields[user]': 'name,birthday'
   })}`, null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users'), 'link is correct')
-    deepEqual(
+    ok(deepEqual(
       response.body.data.map(record => record.attributes.name),
-      [ 'John Doe', 'Microsoft Bob', 'Jane Doe' ],
+      [ 'John Doe', 'Microsoft Bob', 'Jane Doe' ]),
       'sort order is correct')
   })
 })
@@ -195,11 +196,11 @@ run(() => {
     'filter[name]': 'John Doe,Jane Doe',
     'filter[birthday]': '1992-12-07'
   })}`, null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users'), 'link is correct')
-    deepEqual(
+    ok(deepEqual(
       response.body.data.map(record => record.attributes.name).sort(),
-      [ 'John Doe' ], 'match is correct')
+      [ 'John Doe' ]), 'match is correct')
   })
 })
 
@@ -207,7 +208,7 @@ run(() => {
 run(() => {
   comment('dasherizes the camel cased fields')
   return test('/users/1', null, response => {
-    equal(response.body.data.attributes['camel-case-field'],
+    ok(response.body.data.attributes['camel-case-field'] ===
       'Something with a camel case field.', 'camel case field is correct')
   })
 })
@@ -218,13 +219,13 @@ run(() => {
   return test(
     `/animals/1?${qs.stringify({ include: 'owner.friends' })}`,
   null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/animals/1'), 'link is correct')
-    equal(response.body.data.id, '1', 'id is correct')
-    deepEqual(response.body.included.map(record => record.type),
-      [ 'users', 'users' ], 'type is correct')
-    deepEqual(response.body.included.map(record => record.id)
-      .sort((a, b) => a - b), [ '1', '3' ], 'id is correct')
+    ok(response.body.data.id === '1', 'id is correct')
+    ok(deepEqual(response.body.included.map(record => record.type),
+      [ 'users', 'users' ]), 'type is correct')
+    ok(deepEqual(response.body.included.map(record => record.id)
+      .sort((a, b) => a - b), [ '1', '3' ]), 'id is correct')
   })
 })
 
@@ -232,9 +233,9 @@ run(() => {
 run(() => {
   comment('show individual record with encoded ID')
   return test(`/animals/%2Fwtf`, null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/animals/%2Fwtf'), 'link is correct')
-    equal(response.body.data.id, '/wtf', 'id is correct')
+    ok(response.body.data.id === '/wtf', 'id is correct')
   })
 })
 
@@ -242,9 +243,9 @@ run(() => {
 run(() => {
   comment('find a single non-existent record')
   return test('/animals/404', null, response => {
-    equal(response.status, 404, 'status is correct')
+    ok(response.status === 404, 'status is correct')
     ok('errors' in response.body, 'errors object exists')
-    equal(response.body.errors[0].title, 'NotFoundError', 'title is correct')
+    ok(response.body.errors[0].title === 'NotFoundError', 'title is correct')
     ok(response.body.errors[0].detail.length, 'detail exists')
   })
 })
@@ -253,7 +254,7 @@ run(() => {
 run(() => {
   comment('delete a single record')
   return test('/animals/2', { method: 'delete' }, response => {
-    equal(response.status, 204, 'status is correct')
+    ok(response.status === 204, 'status is correct')
   })
 })
 
@@ -261,7 +262,7 @@ run(() => {
 run(() => {
   comment('find a singular related record')
   return test('/users/2/spouse', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/2/spouse'), 'link is correct')
     ok(!Array.isArray(response.body.data), 'data type is correct')
   })
@@ -271,7 +272,7 @@ run(() => {
 run(() => {
   comment('find a plural related record')
   return test('/users/2/owned-pets', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/2/owned-pets'),
       'link is correct')
     ok(response.body.data.length === 2, 'data length is correct')
@@ -282,7 +283,7 @@ run(() => {
 run(() => {
   comment('find a collection of non-existent related records')
   return test('/users/3/owned-pets', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/3/owned-pets'),
       'link is correct')
     ok(Array.isArray(response.body.data) && !response.body.data.length,
@@ -294,7 +295,7 @@ run(() => {
 run(() => {
   comment('find an empty collection')
   return test(encodeURI('/☯s'), null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf(
       encodeURI('/☯s')), 'link is correct')
     ok(Array.isArray(response.body.data) && !response.body.data.length,
@@ -306,10 +307,10 @@ run(() => {
 run(() => {
   comment('get an array relationship entity')
   return test('/users/2/relationships/owned-pets', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/2/relationships/owned-pets'),
       'link is correct')
-    deepEqual(response.body.data.map(data => data.id), [ 2, 3 ],
+    ok(deepEqual(response.body.data.map(data => data.id), [ 2, 3 ]),
       'ids are correct')
   })
 })
@@ -318,10 +319,10 @@ run(() => {
 run(() => {
   comment('get an empty array relationship entity')
   return test('/users/3/relationships/owned-pets', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/3/relationships/owned-pets'),
       'link is correct')
-    deepEqual(response.body.data, [], 'data is correct')
+    ok(deepEqual(response.body.data, []), 'data is correct')
   })
 })
 
@@ -329,11 +330,11 @@ run(() => {
 run(() => {
   comment('get a singular relationship entity')
   return test('/users/1/relationships/spouse', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/1/relationships/spouse'),
       'link is correct')
-    equal(response.body.data.type, 'users', 'type is correct')
-    equal(response.body.data.id, 2, 'id is correct')
+    ok(response.body.data.type === 'users', 'type is correct')
+    ok(response.body.data.id === 2, 'id is correct')
   })
 })
 
@@ -341,10 +342,10 @@ run(() => {
 run(() => {
   comment('get an empty singular relationship entity')
   return test('/users/3/relationships/spouse', null, response => {
-    equal(response.status, 200, 'status is correct')
+    ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/users/3/relationships/spouse'),
       'link is correct')
-    equal(response.body.data, null, 'data is correct')
+    ok(response.body.data === null, 'data is correct')
   })
 })
 
@@ -358,7 +359,7 @@ run(() => {
       data: { type: 'users', id: 3 }
     }
   }, response => {
-    equal(response.status, 204, 'status is correct')
+    ok(response.status === 204, 'status is correct')
   })
 })
 
@@ -372,7 +373,7 @@ run(() => {
       data: [ { type: 'animals', id: 2 } ]
     }
   }, response => {
-    equal(response.status, 204, 'status is correct')
+    ok(response.status === 204, 'status is correct')
   })
 })
 
@@ -386,7 +387,7 @@ run(() => {
       data: [ { type: 'animals', id: 2 } ]
     }
   }, response => {
-    equal(response.status, 204, 'status is correct')
+    ok(response.status === 204, 'status is correct')
   })
 })
 
@@ -400,7 +401,7 @@ run(() => {
       data: [ { type: 'users', id: 3 } ]
     }
   }, response => {
-    equal(response.status, 204, 'status is correct')
+    ok(response.status === 204, 'status is correct')
   })
 })
 
@@ -408,8 +409,8 @@ run(() => {
 run(() => {
   comment('respond to options: index')
   return test('/', { method: 'options' }, response => {
-    equal(response.status, 204, 'status is correct')
-    equal(response.headers['allow'],
+    ok(response.status === 204, 'status is correct')
+    ok(response.headers['allow'] ===
       'GET', 'allow header is correct')
   })
 })
@@ -418,8 +419,8 @@ run(() => {
 run(() => {
   comment('respond to options: collection')
   return test('/animals', { method: 'options' }, response => {
-    equal(response.status, 204, 'status is correct')
-    equal(response.headers['allow'],
+    ok(response.status === 204, 'status is correct')
+    ok(response.headers['allow'] ===
       'GET, POST', 'allow header is correct')
   })
 })
@@ -428,8 +429,8 @@ run(() => {
 run(() => {
   comment('respond to options: individual')
   return test('/animals/1', { method: 'options' }, response => {
-    equal(response.status, 204, 'status is correct')
-    equal(response.headers['allow'],
+    ok(response.status === 204, 'status is correct')
+    ok(response.headers['allow'] ===
       'GET, PATCH, DELETE', 'allow header is correct')
   })
 })
@@ -438,8 +439,8 @@ run(() => {
 run(() => {
   comment('respond to options: link')
   return test('/animals/1/owner', { method: 'options' }, response => {
-    equal(response.status, 204, 'status is correct')
-    equal(response.headers['allow'],
+    ok(response.status === 204, 'status is correct')
+    ok(response.headers['allow'] ===
       'GET', 'allow header is correct')
   })
 })
@@ -449,8 +450,8 @@ run(() => {
   comment('respond to options: relationships')
   return test('/animals/1/relationships/owner', { method: 'options' },
   response => {
-    equal(response.status, 204, 'status is correct')
-    equal(response.headers['allow'],
+    ok(response.status === 204, 'status is correct')
+    ok(response.headers['allow'] ===
       'GET, POST, PATCH, DELETE', 'allow header is correct')
   })
 })
@@ -459,6 +460,6 @@ run(() => {
 run(() => {
   comment('respond to options: fail')
   return test('/foo', { method: 'options' }, response => {
-    equal(response.status, 404, 'status is correct')
+    ok(response.status === 404, 'status is correct')
   })
 })
