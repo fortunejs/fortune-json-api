@@ -33,6 +33,7 @@ The `options` object is as follows:
 - `maxLimit`: maximum number of records to show per page. Default: `1000`.
 - `includeLimit`: maximum depth of fields per include. Default: `3`.
 - `bufferEncoding`: which encoding type to use for input buffer fields. Default: `base64`.
+- `jsonSpaces`: how many spaces to use for pretty printing JSON. Default: `2`.
 
 Internal options:
 
