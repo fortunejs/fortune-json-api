@@ -14,14 +14,16 @@ $ npm install fortune-json-api
 ## Usage
 
 ```js
-import fortune from 'fortune'
-import jsonApi from 'fortune-json-api'
+const fortune = require('fortune')
+const jsonApiSerializer = require('fortune-json-api')
 
-const store = fortune.create({
-  serializers: [ {
-    type: jsonApi,
-    options: { ... }
-  } ]
+const store = fortune({ ... }, {
+  serializers: [
+    {
+      type: jsonApiSerializer,
+      options: { ... }
+    }
+  ]
 })
 ```
 
