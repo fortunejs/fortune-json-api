@@ -36,7 +36,8 @@ run(() => {
           birthday: new Date().toJSON(),
           picture: new Buffer('This is a string.').toString('base64'),
           'favorite-food': 'Bacon',
-          nicknames: [ 'Doge', 'The Dog' ]
+          nicknames: [ 'Doge', 'The Dog' ],
+          'some-date': '2015-01-04T00:00:00.000Z'
         },
         relationships: {
           owner: {
@@ -58,6 +59,8 @@ run(() => {
       .toString() === 'This is a string.', 'buffer is correct')
     ok(Date.now() - new Date(response.body.data.attributes.birthday)
       .getTime() < 60 * 1000, 'date is close enough')
+    ok(response.body.data.attributes['some-date'] ===
+       '2015-01-04T00:00:00.000Z', 'inflected casted value is correct')
   })
 })
 
@@ -118,7 +121,8 @@ run(() => {
         type: 'users',
         attributes: {
           name: 'Jenny Death',
-          'camel-case-field': 'foobar'
+          'camel-case-field': 'foobar',
+          'some-date': '2015-01-07'
         },
         relationships: {
           spouse: {
@@ -147,6 +151,8 @@ run(() => {
     ok(response.status === 200, 'status is correct')
     ok(Math.abs(new Date(response.body.data.attributes['last-modified'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
+    ok(response.body.data.attributes['some-date'] ===
+       '2015-01-07T00:00:00.000Z', 'inflected casted value is correct')
   })
 })
 
