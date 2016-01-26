@@ -1,7 +1,7 @@
 {
   "name": "fortune-json-api",
   "description": "JSON API serializer for Fortune.",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "license": "MIT",
   "author": {
     "email": "0x8890@airmail.cc",
@@ -17,6 +17,7 @@
     "build": "npm run build:lib && npm run build:test",
     "build:lib": "mkdirp dist/lib && babel lib --out-dir dist/lib",
     "build:test": "mkdirp dist/test && babel test --out-dir dist/test",
+    "postpublish": "git tag `npm v fortune-json-api version` && git push origin --tags",
     "prepublish": "npm run clean && npm run build",
     "test": "npm run test:lint && npm run build && node dist/test",
     "test:lint": "eslint lib test"
@@ -34,9 +35,9 @@
     "deep-equal": "^1.0.1",
     "eslint": "^1.10.3",
     "eslint-config-0x8890": "^1.0.1",
-    "fortune": "^1.11.1",
+    "fortune": "^2.0.2",
     "mkdirp": "^0.5.1",
-    "rimraf": "^2.5.0"
+    "rimraf": "^2.5.1"
   },
   "files": [
     "dist/lib",
