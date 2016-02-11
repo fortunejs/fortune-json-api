@@ -1,8 +1,13 @@
-import deepEqual from 'deep-equal'
-import qs from 'querystring'
-import { run, comment, ok } from 'fortune/test/harness'
-import httpTest from 'fortune/test/http'
-import jsonApi from '../lib'
+const deepEqual = require('deep-equal')
+const qs = require('querystring')
+
+const harness = require('fortune/test/harness')
+const run = harness.run
+const comment = harness.comment
+const ok = harness.ok
+
+const httpTest = require('fortune/test/http')
+const jsonApi = require('../lib')
 
 
 const mediaType = 'application/vnd.api+json'
