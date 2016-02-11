@@ -17,12 +17,9 @@ $ npm install fortune-json-api
 const fortune = require('fortune')
 const jsonApiSerializer = require('fortune-json-api')
 
-const store = fortune({ ... }, {
+fortune.net.http(instance, {
   serializers: [
-    {
-      type: jsonApiSerializer,
-      options: { ... }
-    }
+    [ jsonApiSerializer, options ]
   ]
 })
 ```
