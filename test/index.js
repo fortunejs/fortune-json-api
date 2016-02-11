@@ -1,18 +1,25 @@
-import deepEqual from 'deep-equal'
-import qs from 'querystring'
-import { run, comment, ok } from 'fortune/test/harness'
-import httpTest from 'fortune/test/http'
-import jsonApi from '../lib'
+const deepEqual = require('deep-equal')
+const qs = require('querystring')
+
+const tapdance = require('tapdance')
+const run = tapdance.run
+const comment = tapdance.comment
+const ok = tapdance.ok
+
+const httpTest = require('fortune/test/http')
+const jsonApi = require('../lib')
 
 
 const mediaType = 'application/vnd.api+json'
 const test = httpTest.bind(null, {
-  serializers: [ { type: jsonApi } ]
+  serializers: [
+    [ jsonApi ]
+  ]
 })
 
 
 run(() => {
-  comment('get ad-hoc index')
+  comment('get ad hoc index')
   return test('/', null, response => {
     ok(response.status === 200, 'status is correct')
     ok(response.headers['content-type'] === mediaType,
@@ -92,17 +99,18 @@ run(() => {
     headers: { 'Content-Type': mediaType }
   }, response => {
     ok(response.status === 405, 'status is correct')
-    ok(response.headers['allow'] === 'GET, PATCH, DELETE',
-      'allow header is correct')
     ok(response.body.errors.length === 1, 'error exists')
   })
 })
 
 
 run(() => {
-  comment('create record with wrong type should fail')
-  return test('/users', { method: 'post' }, response => {
-    ok(response.status === 415, 'status is correct')
+  comment('create record with missing payload should fail')
+  return test('/users', {
+    method: 'post',
+    headers: { 'Content-Type': mediaType }
+  }, response => {
+    ok(response.status === 400, 'status is correct')
     ok(response.headers['content-type'] === mediaType,
       'content type is correct')
     ok(response.body.errors.length === 1, 'error exists')
