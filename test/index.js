@@ -96,7 +96,8 @@ run(() => {
   comment('create record with wrong route should fail')
   return test('/users/4', {
     method: 'post',
-    headers: { 'Content-Type': mediaType }
+    headers: { 'Content-Type': mediaType },
+    body: {}
   }, response => {
     ok(response.status === 405, 'status is correct')
     ok(response.body.errors.length === 1, 'error exists')
@@ -108,7 +109,8 @@ run(() => {
   comment('create record with missing payload should fail')
   return test('/users', {
     method: 'post',
-    headers: { 'Content-Type': mediaType }
+    headers: { 'Content-Type': mediaType },
+    body: {}
   }, response => {
     ok(response.status === 400, 'status is correct')
     ok(response.headers['content-type'] === mediaType,
@@ -246,7 +248,7 @@ run(() => {
 
 run(() => {
   comment('show individual record with encoded ID')
-  return test(`/animals/%2Fwtf`, null, response => {
+  return test('/animals/%2Fwtf', null, response => {
     ok(response.status === 200, 'status is correct')
     ok(~response.body.links.self.indexOf('/animals/%2Fwtf'), 'link is correct')
     ok(response.body.data.id === '/wtf', 'id is correct')
