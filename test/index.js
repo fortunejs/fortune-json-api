@@ -1,3 +1,5 @@
+'use strict'
+
 const deepEqual = require('deep-equal')
 const qs = require('querystring')
 
@@ -214,6 +216,14 @@ run(() => {
     ok('first' in response.body.links, 'pagination first included')
     ok('last' in response.body.links, 'pagination last included')
     ok('next' in response.body.links, 'pagination next included')
+
+    for (let key in response.body.links) {
+      if (key === 'self') continue
+      ok(Object.keys(qs.parse(
+        response.body.links[key].split('?')[1])).length === 2,
+        'number of query options correct')
+    }
+
     ok(response.body.data.length === 1, 'limit option applied')
   })
 })
