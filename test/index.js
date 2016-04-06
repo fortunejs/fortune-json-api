@@ -42,7 +42,7 @@ run(() => {
           type: 'Chihuahua',
           birthday: new Date().toJSON(),
           picture: new Buffer('This is a string.').toString('base64'),
-          'favorite-food': 'Bacon',
+          'is-neutered': true,
           nicknames: [ 'Doge', 'The Dog' ],
           'some-date': '2015-01-04T00:00:00.000Z'
         },
@@ -60,14 +60,12 @@ run(() => {
     ok(~response.headers['location'].indexOf('/animals/4'),
       'location header looks right')
     ok(response.body.data.type === 'animals', 'type is correct')
-    ok(response.body.data.attributes['favorite-food'] === 'Bacon',
+    ok(response.body.data.attributes['is-neutered'] === true,
       'inflected key value is correct')
     ok(new Buffer(response.body.data.attributes.picture, 'base64')
       .toString() === 'This is a string.', 'buffer is correct')
     ok(Date.now() - new Date(response.body.data.attributes.birthday)
       .getTime() < 60 * 1000, 'date is close enough')
-    ok(response.body.data.attributes['some-date'] ===
-       '2015-01-04T00:00:00.000Z', 'inflected casted value is correct')
   })
 })
 
@@ -132,7 +130,7 @@ run(() => {
         attributes: {
           name: 'Jenny Death',
           'camel-case-field': 'foobar',
-          'some-date': '2015-01-07'
+          'birthday': '2015-01-07'
         },
         relationships: {
           spouse: {
@@ -159,9 +157,9 @@ run(() => {
     }
   }, response => {
     ok(response.status === 200, 'status is correct')
-    ok(Math.abs(new Date(response.body.data.attributes['last-modified'])
+    ok(Math.abs(new Date(response.body.data.attributes['last-modified-at'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
-    ok(response.body.data.attributes['some-date'] ===
+    ok(response.body.data.attributes['birthday'] ===
        '2015-01-07T00:00:00.000Z', 'inflected casted value is correct')
   })
 })
@@ -183,7 +181,7 @@ run(() => {
     }
   }, response => {
     ok(response.status === 200, 'status is correct')
-    ok(Math.abs(new Date(response.body.data.attributes['last-modified'])
+    ok(Math.abs(new Date(response.body.data.attributes['last-modified-at'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
   })
 })
@@ -207,6 +205,21 @@ run(() => {
 
 
 run(() => {
+  comment('use limit option')
+  return test(
+  `/users?${qs.stringify({
+    'page[limit]': 1
+  })}`, null, response => {
+    ok(response.status === 200, 'status is correct')
+    ok('first' in response.body.links, 'pagination first included')
+    ok('last' in response.body.links, 'pagination last included')
+    ok('next' in response.body.links, 'pagination next included')
+    ok(response.body.data.length === 1, 'limit option applied')
+  })
+})
+
+
+run(() => {
   comment('filter a collection')
   return test(`/users?${qs.stringify({
     'filter[name]': 'John Doe,Jane Doe',
@@ -224,8 +237,8 @@ run(() => {
 run(() => {
   comment('dasherizes the camel cased fields')
   return test('/users/1', null, response => {
-    ok(response.body.data.attributes['camel-case-field'] ===
-      'Something with a camel case field.', 'camel case field is correct')
+    ok('created-at' in response.body.data.attributes,
+      'camel case field is correct')
   })
 })
 
