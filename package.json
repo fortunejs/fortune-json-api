@@ -21,15 +21,15 @@
   "dependencies": {
     "deep-equal": "^1.0.1",
     "inflection": "^1.10.0",
-    "uri-templates": "^0.1.9"
+    "uri-templates": "^0.2.0"
   },
   "devDependencies": {
     "chalk": "^1.1.3",
     "deep-equal": "^1.0.1",
-    "eslint": "^2.10.0",
-    "eslint-config-0x8890": "^1.0.2",
-    "fortune": "^4.0.0",
-    "tapdance": "^4.1.1"
+    "eslint": "^2.11.1",
+    "eslint-config-boss": "^1.0.3",
+    "fortune": "^4.0.4",
+    "tapdance": "^4.1.2"
   },
   "files": [
     "lib/",
@@ -37,7 +37,7 @@
   ],
   "main": "lib/index.js",
   "eslintConfig": {
-    "extends": "0x8890",
+    "extends": "boss",
     "rules": {
       "strict": 0
     }

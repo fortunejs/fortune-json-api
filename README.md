@@ -4,7 +4,7 @@
 [![npm Version](https://img.shields.io/npm/v/fortune-json-api.svg?style=flat-square)](https://www.npmjs.com/package/fortune-json-api)
 [![License](https://img.shields.io/npm/l/fortune-json-api.svg?style=flat-square)](https://raw.githubusercontent.com/fortunejs/fortune-json-api/master/LICENSE)
 
-This is a [JSON API](http://jsonapi.org) serializer for [Fortune.js](http://fortunejs.com), which implements all of the features in the [base specification](http://jsonapi.org/format/), and follows the [recommendations](http://jsonapi.org/recommendations/) as much as possible. It is tested against Fortune.js version `3.x`.
+This is a [JSON API](http://jsonapi.org) serializer for [Fortune.js](http://fortunejs.com), which implements all of the features in the [base specification](http://jsonapi.org/format/), and follows the [recommendations](http://jsonapi.org/recommendations/) as much as possible. It is tested against Fortune.js version `4.x`.
 
 ```sh
 $ npm install fortune-json-api
