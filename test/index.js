@@ -217,7 +217,7 @@ run(() => {
     ok('last' in response.body.links, 'pagination last included')
     ok('next' in response.body.links, 'pagination next included')
 
-    for (let key in response.body.links) {
+    for (const key in response.body.links) {
       if (key === 'self') continue
       ok(Object.keys(qs.parse(
         response.body.links[key].split('?')[1])).length === 2,
