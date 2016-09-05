@@ -15,7 +15,11 @@ const jsonApi = require('../lib')
 const mediaType = 'application/vnd.api+json'
 const test = httpTest.bind(null, {
   serializers: [
-    [ jsonApi ]
+    [
+      jsonApi, {
+        prefix: ''
+      }
+    ]
   ]
 })
 

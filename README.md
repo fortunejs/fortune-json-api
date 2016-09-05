@@ -34,13 +34,14 @@ server.listen(8080)
 
 The `options` object is as follows:
 
-- `prefix`: hyperlink prefix, without trailing slash. Default: `""` (empty string).
-- `inflectType`: pluralize the record type name in the URI. Default: `true`.
+- `prefix`: hyperlink prefix, without leading or trailing slashes. Default: `""` (empty string).
+- `inflectType`: pluralize and dasherize the record type name in the URI. Default: `true`.
 - `inflectKeys`: camelize the field names per record. Default: `true`.
 - `maxLimit`: maximum number of records to show per page. Default: `1000`.
 - `includeLimit`: maximum depth of fields per include. Default: `3`.
 - `bufferEncoding`: which encoding type to use for input buffer fields. Default: `base64`.
 - `jsonSpaces`: how many spaces to use for pretty printing JSON. Default: `2`.
+- `jsonapi`: top-level object mainly used for describing version. Default: `{ version: '1.0' }`.
 
 Internal options:
 
