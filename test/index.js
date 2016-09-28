@@ -377,7 +377,7 @@ run(() => {
     ok(~response.body.links.self.indexOf('/users/1/relationships/spouse'),
       'link is correct')
     ok(response.body.data.type === 'users', 'type is correct')
-    ok(response.body.data.id === 2, 'id is correct')
+    ok(response.body.data.id === '2', 'id is correct')
   })
 })
 
