@@ -20,7 +20,7 @@ const fortuneHTTP = require('fortune-http')
 const jsonApiSerializer = require('fortune-json-api')
 
 // `instance` is an instance of Fortune.js.
-const listener = fortuneHTTP.createListener(instance, {
+const listener = fortuneHTTP(instance, {
   serializers: [
     // The `options` object here is optional.
     [ jsonApiSerializer, options ]
