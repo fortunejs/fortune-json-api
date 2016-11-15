@@ -16,10 +16,11 @@ $ npm install fortune-json-api
 ```js
 const http = require('http')
 const fortune = require('fortune')
+const fortuneHTTP = require('fortune-http')
 const jsonApiSerializer = require('fortune-json-api')
 
 // `instance` is an instance of Fortune.js.
-const listener = fortune.net.http(instance, {
+const listener = fortuneHTTP.createListener(instance, {
   serializers: [
     // The `options` object here is optional.
     [ jsonApiSerializer, options ]
@@ -27,7 +28,9 @@ const listener = fortune.net.http(instance, {
 })
 // The listener function may be used as a standalone server, or
 // may be composed as part of a framework.
-const server = http.createServer(listener)
+const server = http.createServer((request, response) =>
+  listener(request, response)
+  .catch(error => { /* error logging */ }))
 
 server.listen(8080)
 ```
