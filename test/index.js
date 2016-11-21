@@ -247,6 +247,31 @@ run(() => {
   })
 })
 
+run(() => {
+  comment('filter a collection for exists')
+  return test(`/users?${qs.stringify({
+    'filter[picture][exists]': 'true'
+  })}`, null, response => {
+    ok(response.status === 200, 'status is correct')
+    ok(~response.body.links.self.indexOf('/users'), 'link is correct')
+    ok(deepEqual(
+      response.body.data.map(record => record.attributes.name).sort(),
+      [ 'Jane Doe', 'John Doe', 'Microsoft Bob' ]), 'match is correct')
+  })
+})
+
+run(() => {
+  comment('filter a collection for not exists')
+  return test(`/users?${qs.stringify({
+    'filter[picture][exists]': 'false'
+  })}`, null, response => {
+    ok(response.status === 200, 'status is correct')
+    ok(~response.body.links.self.indexOf('/users'), 'link is correct')
+    ok(deepEqual(
+      response.body.data.map(record => record.attributes.name).sort(),
+      [ ]), 'match is correct')
+  })
+})
 
 run(() => {
   comment('dasherizes the camel cased fields')
