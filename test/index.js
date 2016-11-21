@@ -274,6 +274,20 @@ run(() => {
 })
 
 run(() => {
+  comment('filter a collection for range')
+  return test(`/users?${qs.stringify({
+    'filter[name][min]': 'Max',
+    'filter[name][max]': 'Min'
+  })}`, null, response => {
+    ok(response.status === 200, 'status is correct')
+    ok(~response.body.links.self.indexOf('/users'), 'link is correct')
+    ok(deepEqual(
+      response.body.data.map(record => record.attributes.name).sort(),
+      [ 'Microsoft Bob' ]), 'match is correct')
+  })
+})
+
+run(() => {
   comment('dasherizes the camel cased fields')
   return test('/users/1', null, response => {
     ok('created-at' in response.body.data.attributes,
