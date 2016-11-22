@@ -244,41 +244,41 @@ run((assert, comment) => {
   })
 })
 
-run(() => {
+run((assert, comment) => {
   comment('filter a collection for exists')
   return test(`/users?${qs.stringify({
     'filter[picture][exists]': 'true'
   })}`, null, response => {
-    ok(response.status === 200, 'status is correct')
-    ok(~response.body.links.self.indexOf('/users'), 'link is correct')
-    ok(deepEqual(
+    assert(response.status === 200, 'status is correct')
+    assert(~response.body.links.self.indexOf('/users'), 'link is correct')
+    assert(deepEqual(
       response.body.data.map(record => record.attributes.name).sort(),
       [ 'Jane Doe', 'John Doe', 'Microsoft Bob' ]), 'match is correct')
   })
 })
 
-run(() => {
+run((assert, comment) => {
   comment('filter a collection for not exists')
   return test(`/users?${qs.stringify({
     'filter[picture][exists]': 'false'
   })}`, null, response => {
-    ok(response.status === 200, 'status is correct')
-    ok(~response.body.links.self.indexOf('/users'), 'link is correct')
-    ok(deepEqual(
+    assert(response.status === 200, 'status is correct')
+    assert(~response.body.links.self.indexOf('/users'), 'link is correct')
+    assert(deepEqual(
       response.body.data.map(record => record.attributes.name).sort(),
       [ ]), 'match is correct')
   })
 })
 
-run(() => {
+run((assert, comment) => {
   comment('filter a collection for range')
   return test(`/users?${qs.stringify({
     'filter[name][min]': 'Max',
     'filter[name][max]': 'Min'
   })}`, null, response => {
-    ok(response.status === 200, 'status is correct')
-    ok(~response.body.links.self.indexOf('/users'), 'link is correct')
-    ok(deepEqual(
+    assert(response.status === 200, 'status is correct')
+    assert(~response.body.links.self.indexOf('/users'), 'link is correct')
+    assert(deepEqual(
       response.body.data.map(record => record.attributes.name).sort(),
       [ 'Microsoft Bob' ]), 'match is correct')
   })
