@@ -7,7 +7,7 @@
 This is a [JSON API](http://jsonapi.org) serializer for [Fortune.js](http://fortune.js.org/), which implements all of the features in the [base specification](http://jsonapi.org/format/), and follows the [recommendations](http://jsonapi.org/recommendations/) as much as possible.
 
 ```sh
-$ npm install fortune-json-api
+$ npm install fortune fortune-http fortune-json-api
 ```
 
 
