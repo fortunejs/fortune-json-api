@@ -2,12 +2,16 @@
 
 const deepEqual = require('deep-equal')
 const qs = require('querystring')
+const Ajv = require('ajv')
 
 const run = require('tapdance')
 
 const httpTest = require('fortune-http/test/http_test')
 const jsonApi = require('../lib')
+const jsonApiResponseSchema = require('./json-api-response-schema.json')
 
+const ajv = new Ajv({allErrors: true, v5: true})
+const validate = ajv.compile(jsonApiResponseSchema)
 
 const mediaType = 'application/vnd.api+json'
 const test = httpTest.bind(null, {
@@ -24,6 +28,7 @@ const test = httpTest.bind(null, {
 run((assert, comment) => {
   comment('get ad hoc index')
   return test('/', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(response.headers['content-type'] === mediaType,
       'content type is correct')
@@ -57,6 +62,7 @@ run((assert, comment) => {
       }
     }
   }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 201, 'status is correct')
     assert(response.headers['content-type'] === mediaType,
       'content type is correct')
@@ -85,6 +91,7 @@ run((assert, comment) => {
       }
     }
   }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 409, 'status is correct')
     assert(response.headers['content-type'] === mediaType,
       'content type is correct')
@@ -100,6 +107,7 @@ run((assert, comment) => {
     headers: { 'Content-Type': mediaType },
     body: {}
   }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 405, 'status is correct')
     assert(response.body.errors.length === 1, 'error exists')
   })
@@ -113,6 +121,7 @@ run((assert, comment) => {
     headers: { 'Content-Type': mediaType },
     body: {}
   }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 400, 'status is correct')
     assert(response.headers['content-type'] === mediaType,
       'content type is correct')
@@ -159,6 +168,7 @@ run((assert, comment) => {
       }
     }
   }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(Math.abs(new Date(response.body.data.attributes['last-modified-at'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
@@ -183,6 +193,7 @@ run((assert, comment) => {
       }
     }
   }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(Math.abs(new Date(response.body.data.attributes['last-modified-at'])
       .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
@@ -197,6 +208,7 @@ run((assert, comment) => {
     'sort': 'birthday,-name',
     'fields[user]': 'name,birthday'
   })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users'), 'link is correct')
     assert(deepEqual(
@@ -213,6 +225,7 @@ run((assert, comment) => {
   `/users?${qs.stringify({
     'page[limit]': 1
   })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert('first' in response.body.links, 'pagination first included')
     assert('last' in response.body.links, 'pagination last included')
@@ -236,6 +249,7 @@ run((assert, comment) => {
     'filter[name]': 'John Doe,Jane Doe',
     'filter[birthday]': '1992-12-07'
   })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users'), 'link is correct')
     assert(deepEqual(
@@ -249,6 +263,7 @@ run((assert, comment) => {
   return test(`/users?${qs.stringify({
     'filter[picture][exists]': 'true'
   })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users'), 'link is correct')
     assert(deepEqual(
@@ -262,6 +277,7 @@ run((assert, comment) => {
   return test(`/users?${qs.stringify({
     'filter[picture][exists]': 'false'
   })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users'), 'link is correct')
     assert(deepEqual(
@@ -276,6 +292,7 @@ run((assert, comment) => {
     'filter[name][min]': 'Max',
     'filter[name][max]': 'Min'
   })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users'), 'link is correct')
     assert(deepEqual(
@@ -287,6 +304,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('dasherizes the camel cased fields')
   return test('/users/1', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert('created-at' in response.body.data.attributes,
       'camel case field is correct')
   })
@@ -298,6 +316,7 @@ run((assert, comment) => {
   return test(
     `/animals/1?${qs.stringify({ include: 'owner.friends' })}`,
   null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/animals/1'), 'link is correct')
     assert(response.body.data.id === '1', 'id is correct')
@@ -312,6 +331,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('show individual record with encoded ID')
   return test('/animals/%2Fwtf', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/animals/%2Fwtf'),
       'link is correct')
@@ -323,6 +343,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('find a single non-existent record')
   return test('/animals/404', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 404, 'status is correct')
     assert('errors' in response.body, 'errors object exists')
     assert(response.body.errors[0].title === 'NotFoundError',
@@ -343,6 +364,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('find a singular related record')
   return test('/users/2/spouse', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users/2/spouse'),
       'link is correct')
@@ -354,6 +376,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('find a plural related record')
   return test('/users/2/owned-pets', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users/2/owned-pets'),
       'link is correct')
@@ -365,6 +388,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('find a collection of non-existent related records')
   return test('/users/3/owned-pets', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users/3/owned-pets'),
       'link is correct')
@@ -377,6 +401,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('find an empty collection')
   return test(encodeURI('/☯s'), null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf(
       encodeURI('/☯s')), 'link is correct')
@@ -389,6 +414,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('get an array relationship entity')
   return test('/users/2/relationships/owned-pets', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self
       .indexOf('/users/2/relationships/owned-pets'),
@@ -402,6 +428,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('get an empty array relationship entity')
   return test('/users/3/relationships/owned-pets', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self
       .indexOf('/users/3/relationships/owned-pets'),
@@ -414,6 +441,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('get a singular relationship entity')
   return test('/users/1/relationships/spouse', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users/1/relationships/spouse'),
       'link is correct')
@@ -426,6 +454,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('get an empty singular relationship entity')
   return test('/users/3/relationships/spouse', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
     assert(~response.body.links.self.indexOf('/users/3/relationships/spouse'),
       'link is correct')
@@ -544,6 +573,7 @@ run((assert, comment) => {
 run((assert, comment) => {
   comment('respond to options: fail')
   return test('/foo', { method: 'options' }, response => {
+    assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 404, 'status is correct')
   })
 })
