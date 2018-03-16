@@ -1,7 +1,7 @@
 {
   "name": "fortune-json-api",
   "description": "JSON API serializer for Fortune.",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,13 +20,13 @@
     "uri-templates": "^0.2.0"
   },
   "devDependencies": {
-    "ajv": "^4.11.6",
-    "chalk": "^1.1.3",
+    "ajv": "^4.11.8",
+    "chalk": "^2.3.2",
     "deep-equal": "^1.0.1",
-    "eslint": "^3.19.0",
-    "eslint-config-boss": "^1.0.5",
-    "fortune": "^5.2.3",
-    "fortune-http": "^1.0.11",
+    "eslint": "^4.18.2",
+    "eslint-config-boss": "^1.0.6",
+    "fortune": "^5.4.2",
+    "fortune-http": "^1.2.8",
     "tapdance": "^5.0.4"
   },
   "files": [
@@ -37,7 +37,8 @@
   "eslintConfig": {
     "extends": "boss",
     "rules": {
-      "strict": 0
+      "strict": 0,
+      "indent": 0
     }
   },
   "engines": {
