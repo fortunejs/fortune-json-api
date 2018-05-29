@@ -1,7 +1,7 @@
 {
   "name": "fortune-json-api",
   "description": "JSON API serializer for Fortune.",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "license": "MIT",
   "repository": {
     "type": "git",
