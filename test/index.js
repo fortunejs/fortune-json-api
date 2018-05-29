@@ -206,7 +206,7 @@ run((assert, comment) => {
   return test(
   `/users?${qs.stringify({
     'sort': 'birthday,-name',
-    'fields[user]': 'name,birthday'
+    'fields[users]': 'name,birthday'
   })}`, null, response => {
     assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 200, 'status is correct')
