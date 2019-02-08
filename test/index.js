@@ -23,6 +23,18 @@ const test = httpTest.bind(null, {
     ]
   ]
 })
+const inflectTest = httpTest.bind(null, {
+  serializers: [
+    [
+      jsonApi, {
+        prefix: '',
+        inflectType: {
+          animal: false
+        }
+      }
+    ]
+  ]
+})
 
 
 run((assert, comment) => {
@@ -575,5 +587,132 @@ run((assert, comment) => {
   return test('/foo', { method: 'options' }, response => {
     assert(validate(response.body), 'response adheres to json api')
     assert(response.status === 404, 'status is correct')
+  })
+})
+
+
+/*
+  Testing Custom Inflections
+ */
+run((assert, comment) => {
+  comment('create record with custom inflections')
+  return inflectTest('/animal', {
+    method: 'post',
+    headers: { 'Content-Type': mediaType },
+    body: {
+      data: {
+        id: 4,
+        type: 'animal',
+        attributes: {
+          name: 'Rover',
+          type: 'Chihuahua',
+          birthday: new Date().toJSON(),
+          picture: new Buffer('This is a string.').toString('base64'),
+          'is-neutered': true,
+          nicknames: [ 'Doge', 'The Dog' ],
+          'some-date': '2015-01-04T00:00:00.000Z'
+        },
+        relationships: {
+          owner: {
+            data: { type: 'users', id: 1 }
+          }
+        }
+      }
+    }
+  }, response => {
+    assert(validate(response.body), 'response adheres to json api')
+    assert(response.status === 201, 'status is correct')
+    assert(response.headers['content-type'] === mediaType,
+      'content type is correct')
+    assert(~response.headers['location'].indexOf('/animal/4'),
+      'location header looks right')
+    assert(response.body.data.type === 'animal', 'type is correct')
+    assert(response.body.data.attributes['is-neutered'] === true,
+      'inflected key value is correct')
+    assert(new Buffer(response.body.data.attributes.picture, 'base64')
+      .toString() === 'This is a string.', 'buffer is correct')
+    assert(Date.now() - new Date(response.body.data.attributes.birthday)
+      .getTime() < 60 * 1000, 'date is close enough')
+  })
+})
+
+
+run((assert, comment) => {
+  comment('update record #1')
+  return inflectTest('/users/2', {
+    method: 'patch',
+    headers: { 'Content-Type': mediaType },
+    body: {
+      data: {
+        id: 2,
+        type: 'users',
+        attributes: {
+          name: 'Jenny Death',
+          'camel-case-field': 'foobar',
+          'birthday': '2015-01-07'
+        },
+        relationships: {
+          spouse: {
+            data: { type: 'users', id: 3 }
+          },
+          'owned-pets': {
+            data: [
+              { type: 'animal', id: 3 }
+            ]
+          },
+          enemies: {
+            data: [
+              { type: 'users', id: 3 }
+            ]
+          },
+          friends: {
+            data: [
+              { type: 'users', id: 1 },
+              { type: 'users', id: 3 }
+            ]
+          }
+        }
+      }
+    }
+  }, response => {
+    assert(validate(response.body), 'response adheres to json api')
+    assert(response.status === 200, 'status is correct')
+    assert(Math.abs(new Date(response.body.data.attributes['last-modified-at'])
+      .getTime() - Date.now()) < 5 * 1000, 'update modifier is correct')
+    assert(response.body.data.attributes['birthday'] ===
+      '2015-01-07T00:00:00.000Z', 'inflected casted value is correct')
+  })
+})
+
+
+run((assert, comment) => {
+  comment('show individual record with encoded ID')
+  return inflectTest('/animal/%2Fwtf', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
+    assert(response.status === 200, 'status is correct')
+    assert(~response.body.links.self.indexOf('/animal/%2Fwtf'),
+      'link is correct')
+    assert(response.body.data.id === '/wtf', 'id is correct')
+  })
+})
+
+
+run((assert, comment) => {
+  comment('find a single non-existent record')
+  return inflectTest('/animal/404', null, response => {
+    assert(validate(response.body), 'response adheres to json api')
+    assert(response.status === 404, 'status is correct')
+    assert('errors' in response.body, 'errors object exists')
+    assert(response.body.errors[0].title === 'NotFoundError',
+      'title is correct')
+    assert(response.body.errors[0].detail.length, 'detail exists')
+  })
+})
+
+
+run((assert, comment) => {
+  comment('delete a single record')
+  return inflectTest('/animal/2', { method: 'delete' }, response => {
+    assert(response.status === 204, 'status is correct')
   })
 })

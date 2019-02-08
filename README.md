@@ -38,7 +38,7 @@ server.listen(8080)
 The `options` object is as follows:
 
 - `prefix`: hyperlink prefix, without leading or trailing slashes. Default: `""` (empty string).
-- `inflectType`: pluralize and dasherize the record type name in the URI. Default: `true`.
+- `inflectType`: pluralize and dasherize the record type name in the URI. Can be Boolean to enable/disable all inflections or an object specifying each type in specific with unreferenced types set to default, ex: `{ faculty: false }`. Default: `true`.
 - `inflectKeys`: camelize the field names per record. Default: `true`.
 - `maxLimit`: maximum number of records to show per page. Default: `1000`.
 - `includeLimit`: maximum depth of fields per include. Default: `3`.
