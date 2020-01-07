@@ -45,6 +45,7 @@ The `options` object is as follows:
 - `bufferEncoding`: which encoding type to use for input buffer fields. Default: `base64`.
 - `jsonSpaces`: how many spaces to use for pretty printing JSON. Default: `2`.
 - `jsonapi`: top-level object mainly used for describing version. Default: `{ version: '1.0' }`.
+- `castNumericIds`: whether to cast numeric id strings to numbers. Default: `false`
 
 Internal options:
 
