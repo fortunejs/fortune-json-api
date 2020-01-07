@@ -35,6 +35,16 @@ const inflectTest = httpTest.bind(null, {
     ]
   ]
 })
+const uncastNumericIdsTest = httpTest.bind(null, {
+  serializers: [
+    [
+      jsonApi, {
+        prefix: '',
+        castNumericIds: false
+      }
+    ]
+  ]
+})
 
 
 run((assert, comment) => {
@@ -714,5 +724,38 @@ run((assert, comment) => {
   comment('delete a single record')
   return inflectTest('/animal/2', { method: 'delete' }, response => {
     assert(response.status === 204, 'status is correct')
+  })
+})
+
+run((assert, comment) => {
+  comment('uncast numeric ids')
+  return uncastNumericIdsTest('/animals', {
+    method: 'post',
+    headers: { 'Content-Type': mediaType },
+    body: {
+      data: {
+        id: '4',
+        type: 'animal',
+        attributes: {
+          name: 'Rover',
+          type: 'Chihuahua',
+          birthday: new Date().toJSON(),
+          picture: new Buffer('This is a string.').toString('base64'),
+          'is-neutered': true,
+          nicknames: [ 'Doge', 'The Dog' ],
+          'some-date': '2015-01-04T00:00:00.000Z'
+        },
+        relationships: {
+          owner: {
+            data: { type: 'users', id: '1' }
+          }
+        }
+      }
+    }
+  }, response => {
+    assert(validate(response.body), 'response adheres to json api')
+    assert(response.status === 400, 'status is correct')
+    assert(response.headers['content-type'] === mediaType,
+      'content type is correct')
   })
 })
