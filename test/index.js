@@ -500,6 +500,20 @@ run((assert, comment) => {
 
 
 run((assert, comment) => {
+  comment('update a singular relationship entity with null')
+  return test('/users/2/relationships/spouse', {
+    method: 'patch',
+    headers: { 'Content-Type': mediaType },
+    body: {
+      data: null
+    }
+  }, response => {
+    assert(response.status === 204, 'status is correct')
+  })
+})
+
+
+run((assert, comment) => {
   comment('update an array relationship entity')
   return test('/users/1/relationships/owned-pets', {
     method: 'patch',
