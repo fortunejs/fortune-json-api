@@ -45,6 +45,15 @@ const uncastNumericIdsTest = httpTest.bind(null, {
     ]
   ]
 })
+const prefixTest = httpTest.bind(null, {
+  serializers: [
+    [
+      jsonApi, {
+        prefix: 'https://example.com'
+      }
+    ]
+  ]
+})
 
 
 run((assert, comment) => {
@@ -771,5 +780,16 @@ run((assert, comment) => {
     assert(response.status === 400, 'status is correct')
     assert(response.headers['content-type'] === mediaType,
       'content type is correct')
+  })
+})
+
+run((assert, comment) => {
+  comment('deserialize prefix')
+  return prefixTest('/', null, response => {
+    assert(response.status === 200, 'status is correct')
+    for (const key in response.body.links) {
+      const value = response.body.links[key]
+      assert(value.indexOf('https://') === 0, 'prefix is correct')
+    }
   })
 })

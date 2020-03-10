@@ -37,7 +37,7 @@ server.listen(8080)
 
 The `options` object is as follows:
 
-- `prefix`: hyperlink prefix, without leading or trailing slashes. Default: `""` (empty string).
+- `prefix`: hyperlink prefix. If this prefix starts with `/`, then it will rewrite paths relative to the prefix. For example, a prefix valued `/api` will handle requests at that route like `/api/users/1`. Default: `""` (empty string).
 - `inflectType`: pluralize and dasherize the record type name in the URI. Can be Boolean to enable/disable all inflections or an object specifying each type in specific with unreferenced types set to default, ex: `{ faculty: false }`. Default: `true`.
 - `inflectKeys`: camelize the field names per record. Default: `true`.
 - `maxLimit`: maximum number of records to show per page. Default: `1000`.
