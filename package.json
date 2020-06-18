@@ -24,7 +24,7 @@
     "chalk": "^3.0.0",
     "eslint": "^6.8.0",
     "eslint-config-boss": "^1.0.6",
-    "fortune": "^5.5.17",
+    "fortune": "https://github.com/cecemel/fortune.git#64a6f63874b369fc2738c2f0a81e8fe8abd691fa",
     "fortune-http": "^1.2.26",
     "tapdance": "^5.1.1"
   },

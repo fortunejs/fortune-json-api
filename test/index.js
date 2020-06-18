@@ -333,6 +333,21 @@ run((assert, comment) => {
 })
 
 run((assert, comment) => {
+  comment(`filter fuzzy-match: Jane and John have
+          a common friend called something like "soft".`)
+  return test(`/users?${qs.stringify({
+    'filter[friends:name][fuzzy-match]': 'soft'
+  })}`, null, response => {
+    assert(validate(response.body), 'response adheres to json api')
+    assert(response.status === 200, 'status is correct')
+    assert(~response.body.links.self.indexOf('/users'), 'link is correct')
+    assert(deepEqual(
+      response.body.data.map(record => record.attributes.name).sort(),
+      [ 'Jane Doe', 'John Doe' ]), 'match is correct')
+  })
+})
+
+run((assert, comment) => {
   comment('dasherizes the camel cased fields')
   return test('/users/1', null, response => {
     assert(validate(response.body), 'response adheres to json api')
