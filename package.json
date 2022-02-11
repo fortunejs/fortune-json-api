@@ -20,7 +20,7 @@
     "uri-templates": "^0.2.0"
   },
   "devDependencies": {
-    "ajv": "^4.11.8",
+    "ajv": "^6.12.3",
     "chalk": "^3.0.0",
     "eslint": "^6.8.0",
     "eslint-config-boss": "^1.0.6",
