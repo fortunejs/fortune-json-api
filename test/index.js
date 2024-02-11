@@ -2,7 +2,8 @@
 
 const deepEqual = require('deep-equal')
 const qs = require('querystring')
-const Ajv = require('ajv')
+const Ajv = require('ajv').default
+const addFormats = require('ajv-formats').default
 
 const run = require('tapdance')
 
@@ -11,6 +12,7 @@ const jsonApi = require('../lib')
 const jsonApiResponseSchema = require('./json-api-response-schema.json')
 
 const ajv = new Ajv({allErrors: true, v5: true})
+addFormats(ajv)
 const validate = ajv.compile(jsonApiResponseSchema)
 
 const mediaType = 'application/vnd.api+json'
@@ -80,7 +82,7 @@ run((assert, comment) => {
           name: 'Rover',
           type: 'Chihuahua',
           birthday: new Date().toJSON(),
-          picture: new Buffer('This is a string.').toString('base64'),
+          picture: Buffer.from('This is a string.').toString('base64'),
           'is-neutered': true,
           nicknames: [ 'Doge', 'The Dog' ],
           'some-date': '2015-01-04T00:00:00.000Z'
@@ -102,7 +104,7 @@ run((assert, comment) => {
     assert(response.body.data.type === 'animals', 'type is correct')
     assert(response.body.data.attributes['is-neutered'] === true,
       'inflected key value is correct')
-    assert(new Buffer(response.body.data.attributes.picture, 'base64')
+    assert(Buffer.from(response.body.data.attributes.picture, 'base64')
       .toString() === 'This is a string.', 'buffer is correct')
     assert(Date.now() - new Date(response.body.data.attributes.birthday)
       .getTime() < 60 * 1000, 'date is close enough')
@@ -655,7 +657,7 @@ run((assert, comment) => {
           name: 'Rover',
           type: 'Chihuahua',
           birthday: new Date().toJSON(),
-          picture: new Buffer('This is a string.').toString('base64'),
+          picture: Buffer.from('This is a string.').toString('base64'),
           'is-neutered': true,
           nicknames: [ 'Doge', 'The Dog' ],
           'some-date': '2015-01-04T00:00:00.000Z'
@@ -677,7 +679,7 @@ run((assert, comment) => {
     assert(response.body.data.type === 'animal', 'type is correct')
     assert(response.body.data.attributes['is-neutered'] === true,
       'inflected key value is correct')
-    assert(new Buffer(response.body.data.attributes.picture, 'base64')
+    assert(Buffer.from(response.body.data.attributes.picture, 'base64')
       .toString() === 'This is a string.', 'buffer is correct')
     assert(Date.now() - new Date(response.body.data.attributes.birthday)
       .getTime() < 60 * 1000, 'date is close enough')
@@ -778,7 +780,7 @@ run((assert, comment) => {
           name: 'Rover',
           type: 'Chihuahua',
           birthday: new Date().toJSON(),
-          picture: new Buffer('This is a string.').toString('base64'),
+          picture: Buffer.from('This is a string.').toString('base64'),
           'is-neutered': true,
           nicknames: [ 'Doge', 'The Dog' ],
           'some-date': '2015-01-04T00:00:00.000Z'
