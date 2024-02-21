@@ -1,6 +1,6 @@
 # Fortune JSON API Serializer
 
-[![Build Status](https://img.shields.io/travis/fortunejs/fortune-json-api/master.svg?style=flat-square)](https://travis-ci.org/fortunejs/fortune-json-api)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/fortunejs/fortune-json-api/test.yml)
 [![npm Version](https://img.shields.io/npm/v/fortune-json-api.svg?style=flat-square)](https://www.npmjs.com/package/fortune-json-api)
 [![License](https://img.shields.io/npm/l/fortune-json-api.svg?style=flat-square)](https://raw.githubusercontent.com/fortunejs/fortune-json-api/master/LICENSE)
 
